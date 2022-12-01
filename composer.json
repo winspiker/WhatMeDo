@@ -1,0 +1,15 @@
+{
+    "name": "winspiker/whatmedo",
+    "autoload": {
+        "psr-4": {
+            "Winspiker\\WhatMeDo\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "winspiker",
+            "email": "hidemysword69@gmail.com"
+        }
+    ],
+    "require": {}
+}
