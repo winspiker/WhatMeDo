@@ -17,6 +17,11 @@ RUN apk update && \
     php81-session \
     php81-simplexml \
     php81-tokenizer \
+    php81-pdo \
+    php81-xml \
+    php81-xmlwriter \
+    php81-dom \
+    php81-pdo \
     composer \
     shadow
 

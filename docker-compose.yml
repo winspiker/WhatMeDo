@@ -10,6 +10,5 @@ services:
         uid: 1000
       dockerfile: docker/alpine/Dockerfile
       context: .
-    env_file: .env.docker
     volumes:
       - .:/app

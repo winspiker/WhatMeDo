@@ -1,2 +1,42 @@
-.idea
-vendor
+###> symfony/framework-bundle ###
+/.env.local
+/.env.local.php
+/.env.*.local
+/config/secrets/prod/prod.decrypt.private.php
+/public/bundles/
+/var/*
+!/var/.gitkeep
+/vendor/
+###< symfony/framework-bundle ###
+
+###> friendsofphp/php-cs-fixer ###
+/.php_cs
+/.php_cs.cache
+###< friendsofphp/php-cs-fixer ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+.phpunit.result.cache
+/coverage
+/clover.xml
+###< phpunit/phpunit ###
+
+###> IDE ###
+/.idea
+###< IDE ###
+
+###> OS ###
+.DS_Store
+###< OS ###
+
+###> Docker ###
+docker-compose.*.yml
+/docker/logs/nginx/*
+!/docker/logs/nginx/.gitkeep
+/docker/nginx/ssl/certs/*
+!/docker/nginx/ssl/certs/.gitkeep
+/docker/nginx/ssl/private/*
+!/docker/nginx/ssl/private/.gitkeep
+###< Docker ###
+
+composer.phar
