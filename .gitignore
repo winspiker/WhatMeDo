@@ -22,7 +22,7 @@
 ###< phpunit/phpunit ###
 
 ###> IDE ###
-/.idea
+.idea
 ###< IDE ###
 
 ###> OS ###
