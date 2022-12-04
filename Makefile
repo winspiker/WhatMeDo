@@ -6,17 +6,18 @@ up:
 	@$(dc_bin) up -d
 
 enter-%:
-	@$(dc_bin) run $(call get_container_name, $@) bash
+	@$(dc_bin) exec $(call get_container_name, $@) bash
 
-enter: enter-alpine
+enter: enter-app
 
 rm-%:
-	@$(dc_bin) rm -fs $3
+	@$(dc_bin) rm -fs $(call get_container_name, $@)
 
-rm: rm-apline
+rm: rm-app
 
-build:
+build: clear
 	@$(dc_bin) build
 
-#clear: rm-alpine
-#	@$(docker images | grep $(app_name) | awk '{ print $3 }' | docker rmi) 2> /dev/null
+clear:
+	@$(docker images | grep none | awk '{ print $3 }' | docker rmi -f) 2> /dev/null
+

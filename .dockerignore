@@ -1,0 +1,30 @@
+/.git
+/.gitignore
+/buddy.yml
+/ansible
+/vendor
+/tests
+/var/*
+
+###> friendsofphp/php-cs-fixer ###
+/.php_cs
+/.php_cs.cache
+/.php_cs.dist
+###< friendsofphp/php-cs-fixer ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+/phpunit.xml.dist
+/.phpunit.result.cache
+/coverage
+/clover.xml
+###< phpunit/phpunit ###
+
+###> IDE ###
+/.vscode
+/.phan
+###< IDE ###
+
+###> OS ###
+.DS_Store
+###< OS ###
