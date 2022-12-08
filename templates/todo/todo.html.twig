@@ -6,15 +6,15 @@
 
 {% block body %}
 
-    <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
-        <div class="container-md">
+    <div class="p-5 text-center">
+        <div class="col-10 container-fluid">
             {% if error is defined %}
                 <div class="alert alert-danger" style="background: rgba(255, 0, 0, 0.5)">
                     {{ error }}
                 </div>
             {% endif %}
-            <table id="data_table" class="table table-dark table-striped">
-                <thead>
+            <table id="data_table" class="table data-fixed-columns table-dark table-striped">
+                <colgroup>
                 <tr>
                     <th scope="col">#</th>
                     <th scope="col">Title</th>
@@ -24,7 +24,7 @@
                     <th scope="col">Updated At</th>
                     <th scope="col">Action</th>
                 </tr>
-                </thead>
+                </colgroup>
                 <tbody>
                 <tr class="mb-50">
                     <form method="POST" action="{{ path('create')}}">
@@ -35,7 +35,11 @@
                         <td></td>
                         <td></td>
                         <td>
+                            <div class="btn-group" role="group" aria-label="Basic example">
                                 <button type="submit" name="create" class="btn btn-success">Create</button>
+                                <a href="{{ path('create_fake', { number: 1}) }}" class="btn btn-success">Create 1 Fake</a>
+                                <a href="{{ path('create_fake', { number: 20}) }}" class="btn btn-success">Create 20 Fake</a>
+                            </div>
                         </td>
                     </form>
                 </tr>

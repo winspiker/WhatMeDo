@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Factory\TaskFactory;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -52,7 +53,7 @@ class HomeController extends AbstractController
     public function doneTask(EntityManagerInterface $entityManager, Task $task): Response
     {
 
-        $task->doneStatus();
+        $task->setStatus();
         $entityManager->flush();
 
         return $this->redirectToRoute("todo_list");
@@ -85,6 +86,18 @@ class HomeController extends AbstractController
         return $this->redirectToRoute("todo_list");
     }
 
+    public function fakeCreateOneTask(int $number, EntityManagerInterface $entityManager): Response
+    {
+        $number = (int) $number;
+        if (!in_array($number, [1, 20], true)) {
+            $repo = $entityManager->getRepository(Task::class);
+            $tasks = $repo->findAll();
+            return $this->render("todo/todo.html.twig", ['error' => 'Invalid number to create fake tasks', 'tasks' => $tasks]);
+        }
+
+        TaskFactory::createMany($number);
+        return $this->redirectToRoute("todo_list");
+    }
     ####################### END CREATE ROUTE #######################
 
 #-----------------------------------------------------------------#
@@ -136,7 +149,6 @@ class HomeController extends AbstractController
         }
 
         $task->setDescription($description ?? null);
-        $task->setUpdated();
         return $task;
     }
 

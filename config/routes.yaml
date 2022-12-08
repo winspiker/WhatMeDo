@@ -32,3 +32,6 @@ create:
     path: create
     methods: ['POST']
     controller: App\Controller\HomeController::createTask
+create_fake:
+    path: create_fake/{number}
+    controller: App\Controller\HomeController::fakeCreateOneTask

@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace App\Entity;
 
 use App\Repository\TaskRepository;
-use DateTimeZone;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Gedmo\Timestampable\Traits\TimestampableEntity;
 
 enum ProgressValue: string {
     case InProgress = 'in_progress';
@@ -19,7 +19,7 @@ enum ProgressValue: string {
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
 {
-    const TIME_ZONE = 'Europe/Kyiv';
+    use TimestampableEntity;
 
 
     #[ORM\Id]
@@ -34,20 +34,7 @@ class Task
     private ?string $description = null;
 
     #[ORM\Column(type: 'string', enumType: ProgressValue::class)]
-    private ProgressValue $status;
-
-    #[ORM\Column]
-    private \DateTimeImmutable $createdAt;
-
-    #[ORM\Column]
-    private \DateTimeImmutable $updatedAt;
-
-    public function __construct()
-    {
-        $this->status = ProgressValue::InProgress;
-        $this->createdAt = new \DateTimeImmutable(timezone: new \DateTimeZone(self::TIME_ZONE));
-        $this->updatedAt = new \DateTimeImmutable(timezone: new \DateTimeZone(self::TIME_ZONE));
-    }
+    private ProgressValue $status = ProgressValue::InProgress;
 
     public function getId(): ?int
     {
@@ -83,26 +70,9 @@ class Task
         return $this->status;
     }
 
-    public function doneStatus(): self
+    public function setStatus(): self
     {
         $this->status = ProgressValue::Done;
-
-        return $this;
-    }
-
-    public function getCreatedAt(): ?\DateTimeImmutable
-    {
-        return $this->createdAt;
-    }
-
-    public function getUpdatedAt(): \DateTimeImmutable
-    {
-        return $this->updatedAt;
-    }
-
-    public function setUpdated(): self
-    {
-        $this->updatedAt = new \DateTimeImmutable(timezone: new \DateTimeZone(self::TIME_ZONE));
 
         return $this;
     }
