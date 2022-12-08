@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="resource/img/readme/logo.png">
+<img src="resource/img/logo/logo.png">
 
 **WhatMeDo** is a simple symfony ToDo list.
 

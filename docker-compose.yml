@@ -12,7 +12,7 @@ services:
       - "8080:80"
     depends_on:
       - app
-      - db
+      - database
 
   app:
     image: winspiker/whatmedo:latest
@@ -21,11 +21,14 @@ services:
       dockerfile: docker/Dockerfile
       context: .
     volumes:
+      - .env:/app/.env.local
       - .:/app
 
-  db:
+  database:
     image: postgres:${POSTGRES_VERSION:-13}-alpine
     restart: unless-stopped
+    logging:
+      driver: none
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-main}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-main}
@@ -42,17 +45,3 @@ volumes:
         type: none
         device: $PWD/docker/conf/postgres
         o: bind
-
-
-#  conf-nginx:
-#    driver: local
-#    driver_opts:
-#      type: none
-#      device: $PWD/docker/conf/nginx
-#      o: bind
-#  conf-php:
-#    driver: local
-#    driver_opts:
-#      type: none
-#      device: $PWD/docker/conf/php
-#      o: bind
