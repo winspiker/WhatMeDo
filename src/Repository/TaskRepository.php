@@ -40,18 +40,15 @@ class TaskRepository extends ServiceEntityRepository
     }
 
 //    /**
-//     * @return Tasks[] Returns an array of Tasks objects
+//     * @return Task[] Returns an array of Tasks objects
 //     */
-//    public function findByExampleField($value): array
+//    public function findByUser($user): array
 //    {
 //        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->orderBy('t.id', 'ASC')
-//            ->setMaxResults(10)
+//            ->andWhere("t.user = $user")
+//            ->orderBy('t.createdAt', 'DESC')
 //            ->getQuery()
-//            ->getResult()
-//        ;
+//            ->getResult();
 //    }
 
 //    public function findOneBySomeField($value): ?Tasks

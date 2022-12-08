@@ -7,3 +7,15 @@ controllers:
 todo_list:
     path: /
     controller: App\Controller\HomeController::home
+
+login:
+    path: /login
+    controller: App\Controller\AuthController::login
+
+edit:
+    path: edit/{id}
+    controller: App\Controller\HomeController::edit
+
+updated:
+    path: edit/{id}/updated
+    controller: App\Controller\HomeController::updated

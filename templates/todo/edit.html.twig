@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block header %}
+    {% include 'global/_header.html.twig' %}
+{% endblock %}
+
+{% block body %}
+    <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
+        <div class="container-md">
+            <form method="POST" action="{{ path('updated', { id: task.id}) }}">
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend" >
+                        <label class="input-group-text bg-dark text-white" for="title">Title</label>
+                    </div>
+                    <input type="text" name="title" id="title" class="form-control text-dark" value = "{{ task.title }}" aria-describedby="basic-addon2">
+                    <label class="input-group-text bg-dark" style="color:red" for="title">
+                        {% if error is defined %}
+                            {{ error }}
+                        {% endif %}
+                    </label>
+                </div>
+                <div class="input-group mb-2">
+                    <div class="input-group-prepend">
+                        <label class="input-group-text bg-dark text-white width = 20" for="description">Description</label>
+                    </div>
+                    <input type="text" name="description" id="description" class="form-control text-dark" value = "{{ task.description }}" aria-describedby="basic-addon2">
+                </div>
+                <button type="submit" value="{{ task.id }}" name="update" class="end-0 btn btn-primary bg-dark">Update</button>
+            </form>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    {% include 'global/_footer.html.twig' %}
+{% endblock %}

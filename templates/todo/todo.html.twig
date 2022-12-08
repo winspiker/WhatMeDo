@@ -1,7 +1,7 @@
 {% extends 'base.html.twig' %}
 
 {% block header %}
-    {% include 'global/header.html.twig' %}
+    {% include 'global/_header.html.twig' %}
 {% endblock %}
 
 {% block body %}
@@ -16,6 +16,7 @@
                     <th scope="col">Description</th>
                     <th scope="col">Status</th>
                     <th scope="col">Created At</th>
+                    <th scope="col">Updated At</th>
                     <th scope="col">Action</th>
                 </tr>
                 </thead>
@@ -25,6 +26,7 @@
                         <th scope="row"></th>
                         <td><input name="title" type="text"></td>
                         <td><input name="description" type="text"></td>
+                        <td></td>
                         <td></td>
                         <td></td>
                         <td>
@@ -40,12 +42,13 @@
                         <td>{{ task.description }}</td>
                         <td>{{ task.status.value }}</td>
                         <td>{{ task.createdat|date }}</td>
+                        <td>{{ task.updatedAt|date }}</td>
                         <td>
                             <form class = "form" method="post">
                                 <div class="btn-group" role="group" aria-label="Basic example">
                                     <button type="submit" value="{{ task.id }}" name="done" class="btn btn-primary">Done</button>
                                     <button type="submit" value="{{ task.id }}" name="delete" class="btn btn-primary">Delete</button>
-                                    <button type="submit" value="{{ task.id }}" name="edit" class="btn btn-primary">Edit</button>
+                                    <a href="{{ path('edit', { id: task.id}) }}" class="btn btn-primary">Edit</a>
                                 </div>
                             </form>
                         </td>
@@ -59,5 +62,5 @@
 {% endblock %}
 
 {% block footer %}
-    {% include 'global/footer.html.twig' %}
+    {% include 'global/_footer.html.twig' %}
 {% endblock %}

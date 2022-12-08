@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\TaskRepository;
+use DateTimeZone;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -17,6 +18,9 @@ enum ProgressValue: string {
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
 {
+    const TIME_ZONE = 'Europe/Kyiv';
+
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -34,10 +38,14 @@ class Task
     #[ORM\Column]
     private \DateTimeImmutable $createdAt;
 
+    #[ORM\Column]
+    private \DateTimeImmutable $updatedAt;
+
     public function __construct()
     {
         $this->status = ProgressValue::InProgress;
-        $this->createdAt = new \DateTimeImmutable();
+        $this->createdAt = new \DateTimeImmutable(timezone: new \DateTimeZone(self::TIME_ZONE));
+        $this->updatedAt = new \DateTimeImmutable(timezone: new \DateTimeZone(self::TIME_ZONE));
     }
 
     public function getId(): ?int
@@ -86,9 +94,14 @@ class Task
         return $this->createdAt;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $createAt): self
+    public function getUpdatedAt(): \DateTimeImmutable
     {
-        $this->createdAt = $createAt;
+        return $this->updatedAt;
+    }
+
+    public function setUpdated(): self
+    {
+        $this->updatedAt = new \DateTimeImmutable(timezone: new \DateTimeZone(self::TIME_ZONE));
 
         return $this;
     }
