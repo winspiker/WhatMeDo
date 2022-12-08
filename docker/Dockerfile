@@ -49,6 +49,8 @@ RUN apk update && \
     docker-php-ext-enable xdebug && \
     docker-php-ext-configure pdo_pgsql --with-pdo-pgsql && \
     docker-php-ext-install pdo_pgsql && \
+    docker-php-ext-configure opcache --enable-opcache && \
+    docker-php-ext-install opcache && \
     rm -rf /var/cache/apk/* && \
     useradd -m ${USER} --uid=${UID} && \
     chmod +x /usr/local/bin/entrypoint.sh
