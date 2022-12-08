@@ -20,54 +20,56 @@ class HomeController extends AbstractController
 #-----------------------------------------------------------------#
 
     ####################### HOME ROUTE #######################
-    public function home(EntityManagerInterface $entityManager, Request $request): Response
+    public function home(EntityManagerInterface $entityManager): Response
     {
 
         $repo = $entityManager->getRepository(Task::class);
-        $this->addTask($entityManager, $request);
-        $this->deleteTask($entityManager, $repo, $request);
-        $this->doneTask($repo, $request);
-        $entityManager->flush();
-
         $tasks = $repo->findAll();
 
         return $this->render('todo/todo.html.twig', ['tasks' => $tasks]);
-    }
 
-    private function deleteTask(EntityManagerInterface $entityManager, TaskRepository $repo, Request $request): void
+    }
+    ####################### END HOME ROUTE #######################
+
+#-----------------------------------------------------------------#
+
+
+    ####################### DELETE ROUTE #######################
+    public function deleteTask(EntityManagerInterface $entityManager, Task $task): Response
     {
-        $delete = $request->request->get('delete');
 
-        if (!$delete) {
-            return;
-        }
+        $entityManager->remove($task);
+        $entityManager->flush();
 
-        $task = $repo->find($delete);
-        if (isset($task)) {
-            $entityManager->remove($task);
-        }
+        return $this->redirectToRoute("todo_list");
     }
+    ####################### END DELETE ROUTE #######################
 
-    private function doneTask(TaskRepository $repo, Request $request): void
+#-----------------------------------------------------------------#
+
+
+    ####################### DONE ROUTE #######################
+    public function doneTask(EntityManagerInterface $entityManager, Task $task): Response
     {
-        $done = $request->request->get('done');
 
-        if (!$done) {
-            return;
-        }
+        $task->doneStatus();
+        $entityManager->flush();
 
-        $task = $repo->find($done);
-        $task?->doneStatus();
+        return $this->redirectToRoute("todo_list");
     }
+    ####################### END DONE ROUTE #######################
 
-    public function addTask(EntityManagerInterface $entityManager, Request $request): void
+#-----------------------------------------------------------------#
+
+    ####################### CREATE ROUTE #######################
+    public function createTask(EntityManagerInterface $entityManager, Request $request): Response
     {
         $title = $request->request->get('title');
         $create = $request->request->get('create');
         $description = $request->request->get('description');
 
         if (!isset($create) || $title === '') {
-            return;
+            return $this->redirectToRoute("todo_list");
         }
 
         $task = new Task();
@@ -75,9 +77,12 @@ class HomeController extends AbstractController
         $task->setDescription($description ?? null);
 
         $entityManager->persist($task);
+        $entityManager->flush();
+
+        return $this->redirectToRoute("todo_list");
     }
 
-    ####################### END HOME ROUTE #######################
+    ####################### END CREATE ROUTE #######################
 
 #-----------------------------------------------------------------#
 
@@ -101,7 +106,6 @@ class HomeController extends AbstractController
             return $this->render('todo/edit.html.twig', ['error' => $error, 'task' => $task]);
         }
 
-        $entityManager->persist($taskUpd);
         $entityManager->flush();
         return $this->redirectToRoute("todo_list");
     }

@@ -22,7 +22,7 @@
                 </thead>
                 <tbody>
                 <tr class="mb-50">
-                    <form method="post">
+                    <form method="post" action="{{ path('create')}}">
                         <th scope="row"></th>
                         <td><input name="title" type="text"></td>
                         <td><input name="description" type="text"></td>
@@ -44,13 +44,11 @@
                         <td>{{ task.createdat|date }}</td>
                         <td>{{ task.updatedAt|date }}</td>
                         <td>
-                            <form class = "form" method="post">
                                 <div class="btn-group" role="group" aria-label="Basic example">
-                                    <button type="submit" value="{{ task.id }}" name="done" class="btn btn-primary">Done</button>
-                                    <button type="submit" value="{{ task.id }}" name="delete" class="btn btn-primary">Delete</button>
+                                    <a href="{{ path('done', { id: task.id}) }}" class="btn btn-primary">Done</a>
+                                    <a href="{{ path('delete', { id: task.id}) }}" class="btn btn-primary">Delete</a>
                                     <a href="{{ path('edit', { id: task.id}) }}" class="btn btn-primary">Edit</a>
                                 </div>
-                            </form>
                         </td>
                     </tr>
                 {% endfor %}

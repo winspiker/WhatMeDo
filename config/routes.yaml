@@ -18,4 +18,17 @@ edit:
 
 updated:
     path: edit/{id}/updated
+    methods: ['POST']
     controller: App\Controller\HomeController::updated
+
+delete:
+    path: delete/{id}
+    controller: App\Controller\HomeController::deleteTask
+
+done:
+    path: done/{id}
+    controller: App\Controller\HomeController::doneTask
+create:
+    path: create
+    methods: ['POST']
+    controller: App\Controller\HomeController::createTask
