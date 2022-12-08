@@ -62,19 +62,22 @@ class HomeController extends AbstractController
 #-----------------------------------------------------------------#
 
     ####################### CREATE ROUTE #######################
-    public function createTask(EntityManagerInterface $entityManager, Request $request): Response
+    public function createTask(EntityManagerInterface $entityManager, Request $request, ValidatorInterface $validator): Response
     {
         $title = $request->request->get('title');
-        $create = $request->request->get('create');
         $description = $request->request->get('description');
 
-        if (!isset($create) || $title === '') {
-            return $this->redirectToRoute("todo_list");
-        }
 
         $task = new Task();
         $task->setTitle($title);
         $task->setDescription($description ?? null);
+
+        if (null !==  $errors = $this->titleValidate($task, $validator)) {
+            $errors = $errors->get(0)->getMessage();
+            $repo = $entityManager->getRepository(Task::class);
+            $tasks = $repo->findAll();
+            return $this->render("todo/todo.html.twig", ['error' => $errors, 'tasks' => $tasks]);
+        }
 
         $entityManager->persist($task);
         $entityManager->flush();
@@ -87,7 +90,7 @@ class HomeController extends AbstractController
 #-----------------------------------------------------------------#
 
     ####################### EDIT ROUTE #######################
-    public function edit(Task $task)
+    public function edit(Task $task): Response
     {
         return $this->render('todo/edit.html.twig', ['task' => $task]);
     }
@@ -96,35 +99,43 @@ class HomeController extends AbstractController
 #-----------------------------------------------------------------#
 
     ####################### UPDATE ROUTE #######################
-    public function updated(EntityManagerInterface $entityManager, Task $task, Request $request, ValidatorInterface $validator)
+    public function updated(EntityManagerInterface $entityManager, Task $task, Request $request, ValidatorInterface $validator): Response
     {
 
         $taskUpd = $this->updateTask($task, $request, $validator);
 
         if ($taskUpd instanceof ConstraintViolationList) {
-            $error = $taskUpd->get(0)->getMessage();
-            return $this->render('todo/edit.html.twig', ['error' => $error, 'task' => $task]);
+            $errors = $taskUpd->get(0)->getMessage();
+            return $this->render('todo/edit.html.twig', ['error' => $errors, 'task' => $task]);
         }
 
         $entityManager->flush();
         return $this->redirectToRoute("todo_list");
     }
 
+    private function titleValidate(Task $task, ValidatorInterface $validator): ?ConstraintViolationList
+    {
+        $errors = $validator->validate($task);
 
-    private function updateTask(Task $task, Request $request, ValidatorInterface $validator)
+        if(count($errors) === 0) {
+            return null;
+        }
+
+        return $errors;
+
+    }
+
+    private function updateTask(Task $task, Request $request, ValidatorInterface $validator): Task|ConstraintViolationList
     {
         $title = $request->request->get('title');
-        $update = $request->request->get('update');
         $description = $request->request->get('description');
 
         $task->setTitle($title);
-        $task->setDescription($description ?? null);
-
-        $errors = $validator->validate($task);
-        if((bool)$errors->count()) {
+        if (null !==  $errors = $this->titleValidate($task, $validator)) {
             return $errors;
         }
 
+        $task->setDescription($description ?? null);
         $task->setUpdated();
         return $task;
     }

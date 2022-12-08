@@ -24,6 +24,7 @@
                         <label class="input-group-text bg-dark text-white width = 20" for="description">Description</label>
                     </div>
                     <input type="text" name="description" id="description" class="form-control text-dark" value = "{{ task.description }}" aria-describedby="basic-addon2">
+                    <label class="input-group-text bg-dark" style="color:red" for="description"></label>
                 </div>
                 <button type="submit" value="{{ task.id }}" name="update" class="end-0 btn btn-primary bg-dark">Update</button>
             </form>
