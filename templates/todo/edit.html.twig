@@ -14,7 +14,7 @@
                     </div>
                     <input type="text" name="title" id="title" class="form-control text-dark" value = "{{ task.title }}" aria-describedby="basic-addon2">
                     <label class="input-group-text bg-dark" style="color:red" for="title">
-                        {% if error is defined %}
+                        {% if error %}
                             {{ error }}
                         {% endif %}
                     </label>
