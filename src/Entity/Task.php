@@ -36,6 +36,9 @@ class Task
     #[ORM\Column(type: 'string', enumType: ProgressValue::class)]
     private ProgressValue $status = ProgressValue::InProgress;
 
+    #[ORM\Column(length: 255)]
+    private ?string $email = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -73,6 +76,18 @@ class Task
     public function setStatus(): self
     {
         $this->status = ProgressValue::Done;
+
+        return $this;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
+    }
+
+    public function setEmail(string $email): self
+    {
+        $this->email = $email;
 
         return $this;
     }

@@ -8,10 +8,6 @@ todo_list:
     path: /
     controller: App\Controller\HomeController::home
 
-login:
-    path: /login
-    controller: App\Controller\AuthController::login
-
 edit:
     path: edit/{id}
     controller: App\Controller\HomeController::edit
@@ -34,4 +30,12 @@ create:
     controller: App\Controller\HomeController::createTask
 create_fake:
     path: create_fake/{number}
-    controller: App\Controller\HomeController::fakeCreateOneTask
+    controller: App\Controller\HomeController::fakeCreateTask
+
+app_login:
+    path: /login
+    controller: App\Controller\SecurityController::login
+
+app_logout:
+    path: /logout
+    controller: App\Controller\SecurityController::logout

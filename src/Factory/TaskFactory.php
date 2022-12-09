@@ -1,9 +1,11 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Factory;
 
 use App\Entity\Task;
 use App\Repository\TaskRepository;
+use Symfony\Component\Security\Core\Security;
 use Zenstruck\Foundry\ModelFactory;
 use Zenstruck\Foundry\Proxy;
 use Zenstruck\Foundry\RepositoryProxy;
@@ -29,14 +31,17 @@ use Zenstruck\Foundry\RepositoryProxy;
  */
 final class TaskFactory extends ModelFactory
 {
+    private Security $security;
+
     /**
      * @see https://symfony.com/bundles/ZenstruckFoundryBundle/current/index.html#factories-as-services
      *
      * @todo inject services if required
      */
-    public function __construct()
+    public function __construct(Security $security)
     {
         parent::__construct();
+        $this->security = $security;
     }
 
     /**
@@ -49,6 +54,7 @@ final class TaskFactory extends ModelFactory
         return [
             'title' => self::faker()->text(30),
             'description' => self::faker()->text(100),
+            'email' => $this->security->getUser()->getUserIdentifier(),
         ];
     }
 

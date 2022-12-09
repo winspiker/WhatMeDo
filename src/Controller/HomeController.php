@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Task;
+use App\Entity\User;
 use App\Factory\TaskFactory;
 use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -17,15 +18,26 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class HomeController extends AbstractController
 {
 
-
 #-----------------------------------------------------------------#
 
     ####################### HOME ROUTE #######################
-    public function home(EntityManagerInterface $entityManager): Response
+    public function home(TaskRepository $taskRepository): Response
     {
 
-        $repo = $entityManager->getRepository(Task::class);
-        $tasks = $repo->findAll();
+        $user = $this->getUser();
+
+        if ($user === null) {
+            return $this->redirectToRoute('app_login');
+        }
+
+        $userIdentifier = $user->getUserIdentifier();
+
+
+        $tasks = $taskRepository->findBy(['email' => $userIdentifier]);
+
+        if (in_array("ROLE_ADMIN", $user->getRoles(), true)) {
+            $tasks = $taskRepository->findAll();
+        }
 
         return $this->render('todo/todo.html.twig', ['tasks' => $tasks]);
 
@@ -38,6 +50,11 @@ class HomeController extends AbstractController
     ####################### DELETE ROUTE #######################
     public function deleteTask(EntityManagerInterface $entityManager, Task $task): Response
     {
+        $user = $this->getUser();
+
+        if ($user === null) {
+            return $this->redirectToRoute('app_login');
+        }
 
         $entityManager->remove($task);
         $entityManager->flush();
@@ -65,13 +82,21 @@ class HomeController extends AbstractController
     ####################### CREATE ROUTE #######################
     public function createTask(EntityManagerInterface $entityManager, Request $request, ValidatorInterface $validator): Response
     {
+        $user = $this->getUser();
+
+        if ($user === null) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $title = $request->request->get('title');
         $description = $request->request->get('description');
 
+        $userIdentifier = $user->getUserIdentifier();
 
         $task = new Task();
         $task->setTitle($title);
         $task->setDescription($description ?? null);
+        $task->setEmail($userIdentifier);
 
         if (null !==  $errors = $this->titleValidate($task, $validator)) {
             $errors = $errors->get(0)->getMessage();
@@ -86,8 +111,14 @@ class HomeController extends AbstractController
         return $this->redirectToRoute("todo_list");
     }
 
-    public function fakeCreateOneTask(int $number, EntityManagerInterface $entityManager): Response
+    public function fakeCreateTask(int $number, EntityManagerInterface $entityManager): Response
     {
+        $user = $this->getUser();
+
+        if ($user === null) {
+            return $this->redirectToRoute('app_login');
+        }
+
         $number = (int) $number;
         if (!in_array($number, [1, 20], true)) {
             $repo = $entityManager->getRepository(Task::class);
@@ -105,6 +136,12 @@ class HomeController extends AbstractController
     ####################### EDIT ROUTE #######################
     public function edit(Task $task): Response
     {
+        $user = $this->getUser();
+
+        if ($user === null) {
+            return $this->redirectToRoute('app_login');
+        }
+
         return $this->render('todo/edit.html.twig', ['task' => $task]);
     }
     ####################### END EDIT ROUTE #######################
@@ -114,6 +151,12 @@ class HomeController extends AbstractController
     ####################### UPDATE ROUTE #######################
     public function updated(EntityManagerInterface $entityManager, Task $task, Request $request, ValidatorInterface $validator): Response
     {
+
+        $user = $this->getUser();
+
+        if ($user === null) {
+            return $this->redirectToRoute('app_login');
+        }
 
         $taskUpd = $this->updateTask($task, $request, $validator);
 
@@ -140,6 +183,7 @@ class HomeController extends AbstractController
 
     private function updateTask(Task $task, Request $request, ValidatorInterface $validator): Task|ConstraintViolationList
     {
+
         $title = $request->request->get('title');
         $description = $request->request->get('description');
 
