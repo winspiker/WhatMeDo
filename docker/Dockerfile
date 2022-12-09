@@ -1,5 +1,7 @@
 FROM php:8.1-fpm-alpine
 
+ARG TIMEZONE="UTC"
+
 ARG UID=1000
 ARG GID=1000
 
@@ -54,6 +56,13 @@ RUN apk update && \
     rm -rf /var/cache/apk/* && \
     useradd -m ${USER} --uid=${UID} && \
     chmod +x /usr/local/bin/entrypoint.sh
+
+# set timezone
+RUN ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && \
+    echo ${TIMEZONE} > /etc/timezone && \
+    printf '[PHP]\ndate.timezone = "%s"\n', "$TIMEZONE" > \
+    /usr/local/etc/php/conf.d/tzone.ini && "date"
+
 
 WORKDIR /app
 

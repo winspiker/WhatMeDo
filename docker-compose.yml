@@ -20,6 +20,8 @@ services:
     build:
       dockerfile: docker/Dockerfile
       context: .
+    env_file:
+      - .env.docker
     volumes:
       - .env:/app/.env.local
       - .:/app
