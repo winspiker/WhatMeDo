@@ -38,34 +38,20 @@ ENV PERMANENT_DEPS \
     npm \
     shadow
 
-COPY ./docker/conf/php/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY docker/conf/php/php-fpm.conf /usr/local/etc/php-fpm.conf
 COPY docker/conf/php/www.conf /usr/local/etc/php-fpm.d/www.conf
-COPY docker/conf/php/php.ini /usr/local/etc/php/conf.d/php.ini
 
 RUN apk update && \
     apk add --no-cache -q \
         ${PERMANENT_DEPS} \
         ${PHPIZE_DEPS} && \
-    pecl install xdebug-3.1.6 && \
-    docker-php-ext-enable xdebug && \
     docker-php-ext-configure pdo_pgsql --with-pdo-pgsql && \
     docker-php-ext-install pdo_pgsql && \
     docker-php-ext-configure opcache --enable-opcache && \
     docker-php-ext-install opcache && \
     rm -rf /var/cache/apk/* && \
-    useradd -m ${USER} --uid=${UID} && \
-    chmod +x /usr/local/bin/entrypoint.sh
-
-# set timezone
-RUN ln -snf /usr/share/zoneinfo/${TIMEZONE} /etc/localtime && \
-    echo ${TIMEZONE} > /etc/timezone && \
-    printf '[PHP]\ndate.timezone = "%s"\n', "$TIMEZONE" > \
-    /usr/local/etc/php/conf.d/tzone.ini && "date"
-
+    useradd -m ${USER} --uid=${UID}
 
 WORKDIR /app
 
 USER ${USER}
-
-ENTRYPOINT /usr/local/bin/entrypoint.sh

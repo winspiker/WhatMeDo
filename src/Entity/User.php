@@ -1,11 +1,14 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use App\Service\HashPasswordService;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Gedmo\Timestampable\Traits\Timestampable;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -13,24 +16,32 @@ use Symfony\Component\Security\Core\User\UserInterface;
 #[ORM\Table(name: '`user`')]
 class User implements UserInterface
 {
-
     use TimestampableEntity;
 
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
-
-    #[ORM\Column(length: 180, unique: true)]
-    private ?string $email = null;
+    #[ORM\Id, ORM\Column]
+    private string $id;
 
     #[ORM\Column]
-    private array $roles = [];
+    private array $roles;
 
     #[ORM\Column(length: 255)]
-    private ?string $password = null;
+    private string $password;
 
-    public function getId(): ?int
+    /** @var Collection<Task> */
+    private Collection $tasks;
+
+    public function __construct(
+        #[ORM\Column(length: 180, unique: true)]
+        private readonly string $email,
+        string $password
+    ) {
+        $this->id = uniqid('user_', true);
+        $this->password = HashPasswordService::hash($password);
+        $this->tasks = new ArrayCollection();
+        $this->roles = ['ROLE_USER'];
+    }
+
+    public function getId(): string
     {
         return $this->id;
     }
@@ -40,13 +51,6 @@ class User implements UserInterface
         return $this->email;
     }
 
-    public function setEmail(string $email): self
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
     /**
      * A visual identifier that represents this user.
      *
@@ -54,7 +58,7 @@ class User implements UserInterface
      */
     public function getUserIdentifier(): string
     {
-        return (string) $this->email;
+        return $this->email;
     }
 
     /**
@@ -62,11 +66,7 @@ class User implements UserInterface
      */
     public function getRoles(): array
     {
-        $roles = $this->roles;
-        // guarantee every user at least has ROLE_USER
-        $roles[] = 'ROLE_USER';
-
-        return array_unique($roles);
+        return $this->roles;
     }
 
     public function setRoles(array $roles): self
@@ -79,21 +79,22 @@ class User implements UserInterface
     /**
      * @see UserInterface
      */
-    public function eraseCredentials()
+    public function eraseCredentials(): void
     {
-        // If you store any temporary, sensitive data on the user, clear it here
-        // $this->plainPassword = null;
     }
 
-    public function getPassword(): ?string
+    public function getPassword(): string
     {
         return $this->password;
     }
 
-    public function setPassword(string $password): self
+    public function getTasks(): Collection
     {
-        $this->password = $password;
+        return $this->tasks;
+    }
 
-        return $this;
+    public function equalsPassword(string $password): bool
+    {
+        return $this->password === HashPasswordService::hash($password);
     }
 }

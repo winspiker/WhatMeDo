@@ -65,49 +65,44 @@ class CreateAdminCommand extends Command
         $question = new ChoiceQuestion(sprintf('Do you want give admin to "%s": ', $email), ['yes', 'no'], 'no');
         $question->setErrorMessage('Answer "%s" is invalid.');
 
-        $dublicateUser = $this->userRepository->findOneBy(['email' => $email]);
-        if ($dublicateUser) {
-
-            $io->error(
-                sprintf('User "%s" has exist.', $email)
-            );
-
-            $giveAdmin = $helper->ask($input, $output, $question);
-
-            if ($giveAdmin === 'no') {
-                $io->error(
-                    sprintf('User "%s" can`t create.', $email)
-                );
-
-                return Command::FAILURE;
-            }
-
-            if ($password !== $dublicateUser->getPassword()) {
-                $io->error('Invalid password!');
-
-                return Command::FAILURE;
-            }
-            $dublicateUser->setRoles(['ROLE_ADMIN']);
-
-            $this->entityManager->flush();
+        $duplicateUser = $this->userRepository->findOneBy(['email' => $email]);
+        if (!$duplicateUser) {
+            $user = new User($email, $password);
+            $user->setRoles(['ROLE_ADMIN']);
+            $this->userRepository->save($user);
 
             $io->success(
-                sprintf('The user "%s" is now an admin', $email)
+                sprintf('User "%s" with password "%s" has created.', $email, $password)
             );
 
             return Command::SUCCESS;
         }
-        $user = new User();
 
-        $user->setEmail($email);
-        $user->setPassword($password);
-        $user->setRoles(['ROLE_ADMIN']);
+        $io->error(
+            sprintf('User "%s" has exist.', $email)
+        );
 
-        $this->entityManager->persist($user);
+        $giveAdmin = $helper->ask($input, $output, $question);
+
+        if ($giveAdmin === 'no') {
+            $io->error(
+                sprintf('User "%s" can`t create.', $email)
+            );
+
+            return Command::FAILURE;
+        }
+
+        if ($duplicateUser->equalsPassword($password)) {
+            $io->error('Invalid password!');
+
+            return Command::FAILURE;
+        }
+
+        $duplicateUser->setRoles(['ROLE_ADMIN']);
         $this->entityManager->flush();
 
         $io->success(
-            sprintf('User "%s" with password "%s" has created.', $email, $password)
+            sprintf('The user "%s" is now an admin', $email)
         );
 
         return Command::SUCCESS;

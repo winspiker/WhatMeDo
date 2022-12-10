@@ -60,30 +60,21 @@ class CreateUserCommand extends Command
         $output->writeln('Password: ' . $password);
 
 
-        $dublicateUser = $this
+        $duplicateUser = $this
             ->userRepository
             ->findOneBy(['email' => $email]);
 
-        if ($dublicateUser) {
-
-            $io->error(
-                sprintf('User "%s" has exist.', $email)
-            );
+        if ($duplicateUser) {
+            $io->error(sprintf('User "%s" has exist.', $email));
 
             return Command::FAILURE;
         }
 
-        $user = new User();
-        $user->setEmail($email);
-        $user->setPassword($password);
+        $user = new User($email, $password);
         $user->setRoles(['ROLE_USER']);
+        $this->userRepository->save($user);
 
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
-
-        $io->success(
-            sprintf('User "%s" with password "%s" has created.', $email, $password)
-        );
+        $io->success(sprintf('User "%s" with password "%s" has created.', $email, $password));
 
         return Command::SUCCESS;
     }
