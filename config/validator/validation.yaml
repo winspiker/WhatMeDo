@@ -1,8 +1,6 @@
 App\Entity\Task:
   properties:
     title:
-      - NotBlank:
-          message: 'Title should not be blank.'
       - Length:
           min: 5
           max: 50

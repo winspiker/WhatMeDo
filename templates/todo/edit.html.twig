@@ -7,14 +7,14 @@
 {% block body %}
     <div class="pricing-header p-3 pb-md-4 mx-auto text-center">
         <div class="container-md">
-            <form action="{{ path('updated', { id: task.id}) }}" method="POST">
+            <form method="POST" action="{{ path('update', { id: task.id}) }}">
                 <div class="input-group mb-2">
                     <div class="input-group-prepend" >
                         <label class="input-group-text bg-dark text-white" for="title">Title</label>
                     </div>
                     <input type="text" name="title" id="title" class="form-control text-dark" value = "{{ task.title }}" aria-describedby="basic-addon2">
                     <label class="input-group-text bg-dark" style="color:red" for="title">
-                        {% if error %}
+                        {% if error is defined %}
                             {{ error }}
                         {% endif %}
                     </label>

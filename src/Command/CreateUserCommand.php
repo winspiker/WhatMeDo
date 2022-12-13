@@ -5,13 +5,11 @@ namespace App\Command;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
 #[AsCommand(
@@ -20,17 +18,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class CreateUserCommand extends Command
 {
-
-    private EntityManagerInterface $entityManager;
-    private UserRepository $userRepository;
-
-    public function __construct(EntityManagerInterface $entityManager, UserRepository $userRepository)
-    {
-
-        $this->userRepository = $userRepository;
-        $this->entityManager = $entityManager;
+    public function __construct(
+        private readonly UserRepository $userRepository
+    ) {
         parent::__construct();
-
     }
 
 
@@ -56,34 +47,26 @@ class CreateUserCommand extends Command
         ]);
         $email = $input->getArgument('email');
         $password = $input->getArgument('password');
+        var_dump($password);
         $output->writeln('Username: ' . $email);
         $output->writeln('Password: ' . $password);
 
 
-        $dublicateUser = $this
+        $duplicateUser = $this
             ->userRepository
             ->findOneBy(['email' => $email]);
 
-        if ($dublicateUser) {
-
-            $io->error(
-                sprintf('User "%s" has exist.', $email)
-            );
+        if ($duplicateUser) {
+            $io->error(sprintf('User "%s" has exist.', $email));
 
             return Command::FAILURE;
         }
 
-        $user = new User();
-        $user->setEmail($email);
-        $user->setPassword($password);
+        $user = new User($email, $password);
         $user->setRoles(['ROLE_USER']);
+        $this->userRepository->save($user);
 
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
-
-        $io->success(
-            sprintf('User "%s" with password "%s" has created.', $email, $password)
-        );
+        $io->success(sprintf('User "%s" with password "%s" has created.', $email, $password));
 
         return Command::SUCCESS;
     }

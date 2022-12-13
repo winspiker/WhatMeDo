@@ -1,0 +1,12 @@
+FROM whatmedo-base:latest
+
+COPY docker/php/conf/prod/php.ini /usr/local/etc/php/conf.d/php.ini
+COPY docker/php/conf/prod/opcache.ini /usr/local/etc/php/php.d/opcache.ini
+COPY docker/php/conf/prod/entrypoint.sh /usr/local/bin/entrypoint.sh
+
+RUN docker-php-ext-configure opcache --enable-opcache && \
+    docker-php-ext-install opcache && \
+
+USER backend
+
+ENTRYPOINT /usr/local/bin/entrypoint.sh

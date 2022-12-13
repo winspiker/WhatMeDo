@@ -5,12 +5,10 @@ namespace App\Command;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -21,13 +19,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 )]
 class CreateAdminCommand extends Command
 {
-    private EntityManagerInterface $entityManager;
     private UserRepository $userRepository;
 
-    public function __construct(EntityManagerInterface $entityManager, UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository)
     {
         $this->userRepository = $userRepository;
-        $this->entityManager = $entityManager;
         parent::__construct();
 
     }
@@ -65,49 +61,44 @@ class CreateAdminCommand extends Command
         $question = new ChoiceQuestion(sprintf('Do you want give admin to "%s": ', $email), ['yes', 'no'], 'no');
         $question->setErrorMessage('Answer "%s" is invalid.');
 
-        $dublicateUser = $this->userRepository->findOneBy(['email' => $email]);
-        if ($dublicateUser) {
-
-            $io->error(
-                sprintf('User "%s" has exist.', $email)
-            );
-
-            $giveAdmin = $helper->ask($input, $output, $question);
-
-            if ($giveAdmin === 'no') {
-                $io->error(
-                    sprintf('User "%s" can`t create.', $email)
-                );
-
-                return Command::FAILURE;
-            }
-
-            if ($password !== $dublicateUser->getPassword()) {
-                $io->error('Invalid password!');
-
-                return Command::FAILURE;
-            }
-            $dublicateUser->setRoles(['ROLE_ADMIN']);
-
-            $this->entityManager->flush();
+        $duplicateUser = $this->userRepository->findOneBy(['email' => $email]);
+        if (!$duplicateUser) {
+            $user = new User($email, $password);
+            $user->setRoles(['ROLE_ADMIN']);
+            $this->userRepository->save($user);
 
             $io->success(
-                sprintf('The user "%s" is now an admin', $email)
+                sprintf('User "%s" with password "%s" has created.', $email, $password)
             );
 
             return Command::SUCCESS;
         }
-        $user = new User();
 
-        $user->setEmail($email);
-        $user->setPassword($password);
-        $user->setRoles(['ROLE_ADMIN']);
+        $io->error(
+            sprintf('User "%s" has exist.', $email)
+        );
 
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
+        $giveAdmin = $helper->ask($input, $output, $question);
+
+        if ($giveAdmin === 'no') {
+            $io->error(
+                sprintf('User "%s" can`t create.', $email)
+            );
+
+            return Command::FAILURE;
+        }
+
+        if ($duplicateUser->getPassword()->equals($password)) {
+            $io->error('Invalid password!');
+
+            return Command::FAILURE;
+        }
+
+        $duplicateUser->setRoles(['ROLE_ADMIN']);
+        $this->userRepository->save($duplicateUser);
 
         $io->success(
-            sprintf('User "%s" with password "%s" has created.', $email, $password)
+            sprintf('The user "%s" is now an admin', $email)
         );
 
         return Command::SUCCESS;

@@ -17,8 +17,10 @@ security:
             security: false
         main:
             lazy: true
+            form_login: ~
             provider: app_user_provider
             custom_authenticator: App\Security\LoginFormAuthenticator
+            entry_point: form_login
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#the-firewall
@@ -29,8 +31,9 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+         - { path: ^/tasks/create/fake/, roles: ROLE_ADMIN }
+         - { path: ^/login, roles: PUBLIC_ACCESS }
+         - { path: ^/, roles: [ROLE_USER, ROLE_ADMIN] }
 
 when@test:
     security:

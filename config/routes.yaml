@@ -4,33 +4,37 @@ controllers:
         namespace: App\Controller
     type: attribute
 
-todo_list:
+main:
     path: /
-    controller: App\Controller\HomeController::home
-
+    controller: App\Controller\MainController::home
+    methods: ['GET']
 edit:
-    path: edit/{id}
-    controller: App\Controller\HomeController::edit
+    path: task/{id}/edit
+    controller: App\Controller\TaskController::edit
+    methods: ['GET']
 
-updated:
-    path: edit/{id}/updated
+update:
+    path: task/{id}/update
     methods: ['POST']
-    controller: App\Controller\HomeController::updated
+    controller: App\Controller\TaskController::update
 
-delete:
-    path: delete/{id}
-    controller: App\Controller\HomeController::deleteTask
+remove:
+    path: task/remove/{id}
+    controller: App\Controller\TaskController::deleteTask
 
 done:
-    path: done/{id}
-    controller: App\Controller\HomeController::doneTask
+    path: task/{id}/done
+    controller: App\Controller\TaskController::doneTask
+
 create:
-    path: create
+    path: tasks/create
     methods: ['POST']
-    controller: App\Controller\HomeController::createTask
+    controller: App\Controller\TaskController::createTask
+
 create_fake:
-    path: create_fake/{number}
-    controller: App\Controller\HomeController::fakeCreateTask
+    path: tasks/create/fake/{number}
+    controller: App\Controller\TaskController::fakeCreateTask
+    methods: ['GET']
 
 app_login:
     path: /login
