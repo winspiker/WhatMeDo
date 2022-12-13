@@ -22,7 +22,7 @@ services:
     env_file:
       - .env.docker
     volumes:
-      - .env:/app/.env.local
+      - .env.dist:/app/.env
       - .:/app
 
   database:

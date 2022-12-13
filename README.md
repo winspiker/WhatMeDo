@@ -16,16 +16,24 @@
 
 ## Features
 
-``Coming soon...``
+* **Easy** - Easy to learn and use, friendly construction.
+
+* **Docker** - Installation via docker.
+
+* **Free** - You can use it anywhere, whatever you want.
 
 ## Requirement
 
-``Coming soon...``
+Only [Docker](https://docs.docker.com/get-docker/) and [Docker-Compose](https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04)  🤤
 
 ## Installation
-### 1) Up docker
-``$ make build``<br> 
-``$ make up``
+### 1) Up Docker
+#### 1.1) Build base image
+``$ make build-base``<br> 
+#### 1.2) Build app image
+``$ make build-app``<br>
+#### 1.3) Create and start containers
+``$ make up``<br>
 ### 2) Enter to app
 ``$ make enter``
 ### 3) Migrate database
@@ -36,3 +44,4 @@
 ### For default user
 ``$ bin/console app:create:user <email> <password>``
 
+### Go to - www.your.url/
