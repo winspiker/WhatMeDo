@@ -1,0 +1,12 @@
+FROM whatmedo-base:latest
+
+COPY docker/php/conf/dev/php.ini /usr/local/etc/php/conf.d/php.ini
+COPY docker/php/conf/dev/entrypoint.sh /usr/local/bin/entrypoint.sh
+
+RUN pecl install xdebug-3.1.6 && \
+    docker-php-ext-enable xdebug && \
+    chmod +x /usr/local/bin/entrypoint.sh
+
+USER backend
+
+ENTRYPOINT /usr/local/bin/entrypoint.sh

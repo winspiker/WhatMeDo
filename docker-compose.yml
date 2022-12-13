@@ -6,8 +6,8 @@ services:
     restart: unless-stopped
     volumes:
       - .:/app
-      - ./docker/conf/nginx/default.conf:/etc/nginx/conf.d/default.conf
-      - ./docker/conf/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./docker/nginx/conf/default.conf:/etc/nginx/conf.d/default.conf
+      - ./docker/nginx/conf/nginx.conf:/etc/nginx/nginx.conf
     ports:
       - "8080:80"
     depends_on:
@@ -15,10 +15,9 @@ services:
       - database
 
   app:
-    image: winspiker/whatmedo:latest
     restart: unless-stopped
     build:
-      dockerfile: docker/Dockerfile
+      dockerfile: docker/php/Dockerfile.dev
       context: .
     env_file:
       - .env.docker
@@ -45,5 +44,5 @@ volumes:
       driver: local
       driver_opts:
         type: none
-        device: $PWD/docker/conf/postgres
+        device: $PWD/docker/postgres/conf
         o: bind

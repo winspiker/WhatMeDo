@@ -5,13 +5,12 @@
 {% endblock %}
 
 {% block body %}
-
     <div class="p-5 text-center">
         <div class="col-10 container-fluid">
-            {% if error is defined %}
-                <div class="alert alert-danger" style="background: rgba(255, 0, 0, 0.5)">
-                    {{ error }}
-                </div>
+            {% if error %}
+                    <div class="alert alert-danger" style="background: rgba(255, 0, 0, 0.5)">
+                        {{ error }}
+                    </div>
             {% endif %}
             <table id="data_table" class="table data-fixed-columns table-dark table-striped">
                 <colgroup>
@@ -37,8 +36,10 @@
                         <td>
                             <div class="btn-group" role="group" aria-label="Basic example">
                                 <button type="submit" name="create" class="btn btn-success">Create</button>
-                                <a href="{{ path('create_fake', { number: 1}) }}" class="btn btn-success">Create 1 Fake</a>
-                                <a href="{{ path('create_fake', { number: 20}) }}" class="btn btn-success">Create 20 Fake</a>
+                                {% if is_granted('ROLE_ADMIN') %}
+                                    <a href="{{ path('create_fake', { number: 1}) }}" class="btn btn-success">Create 1 Fake</a>
+                                    <a href="{{ path('create_fake', { number: 20}) }}" class="btn btn-success">Create 20 Fake</a>
+                                {% endif %}
                             </div>
                         </td>
                     </form>
@@ -54,8 +55,8 @@
                         <td>{{ task.updatedAt|date }}</td>
                         <td>
                                 <div class="btn-group" role="group" aria-label="Basic example">
-                                    <a href="{{ path('done', { id: task.id}) }}" class="btn btn-primary">Done</a>
-                                    <a href="{{ path('delete', { id: task.id}) }}" class="btn btn-primary">Delete</a>
+                                    <a data-method="patch" href="{{ path('done', { id: task.id}) }}" class="btn btn-primary">Done</a>
+                                    <a data-confirm="Are you sure?" rel="nofollow" data-method="delete" href="{{ path('remove', { id: task.id}) }}" class="btn btn-primary">Delete</a>
                                     <a href="{{ path('edit', { id: task.id}) }}" class="btn btn-primary">Edit</a>
                                 </div>
                         </td>

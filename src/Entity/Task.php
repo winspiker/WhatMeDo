@@ -1,57 +1,57 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Entity;
 
 use App\Repository\TaskRepository;
+use App\Value\ProgressValue;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Gedmo\Timestampable\Traits\TimestampableEntity;
-
-enum ProgressValue: string {
-    case InProgress = 'in_progress';
-    case Done = 'done';
-}
-
-
-
 
 #[ORM\Entity(repositoryClass: TaskRepository::class)]
 class Task
 {
     use TimestampableEntity;
 
-
-    #[ORM\Id]
-    #[ORM\GeneratedValue]
-    #[ORM\Column]
-    private ?int $id = null;
+    #[ORM\Id, ORM\Column]
+    private string $id;
 
     #[ORM\Column(length: 50)]
-    private ?string $title = null;
+    private string $title;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    private ?string $description = null;
+    private ?string $description;
 
     #[ORM\Column(type: 'string', enumType: ProgressValue::class)]
     private ProgressValue $status = ProgressValue::InProgress;
 
-    #[ORM\Column(length: 255)]
-    private ?string $email = null;
+    #[ORM\ManyToOne(inversedBy: 'tasks')]
+    #[ORM\JoinColumn(nullable: false)]
+    private User $creator;
 
-    public function getId(): ?int
+    public function __construct($creator, string $title, ?string $description = null)
+    {
+        $this->id = uniqid('task_', true);
+        $this->creator = $creator;
+        $this->title = $title;
+        $this->description = $description;
+    }
+
+    public function getId(): string
     {
         return $this->id;
     }
 
-    public function getTitle(): ?string
-    {
-        return $this->title;
-    }
 
-    public function setTitle(string $title): self
+    public function changeTitle(string $title): self
     {
         $this->title = $title;
+
+        if(mb_strlen($title) < 5 || mb_strlen($title) > 50) {
+            throw new \InvalidArgumentException();
+        }
 
         return $this;
     }
@@ -61,7 +61,7 @@ class Task
         return $this->description;
     }
 
-    public function setDescription(?string $description): self
+    public function changeDescription(?string $description): self
     {
         $this->description = $description;
 
@@ -73,22 +73,27 @@ class Task
         return $this->status;
     }
 
-    public function setStatus(): self
+    public function done(): self
     {
         $this->status = ProgressValue::Done;
 
         return $this;
     }
 
-    public function getEmail(): ?string
+    public function getCreator(): User
     {
-        return $this->email;
+        return $this->creator;
     }
 
-    public function setEmail(string $email): self
+    public function setCreator(User $creator): self
     {
-        $this->email = $email;
+        $this->creator = $creator;
 
         return $this;
+    }
+
+    public function getTitle(): string
+    {
+        return $this->title;
     }
 }

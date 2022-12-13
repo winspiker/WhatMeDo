@@ -1,5 +1,6 @@
 get_container_name = $(lastword $(subst -, ,$1))
 dc_bin := $(shell (command -v docker-compose) 2> /dev/null)
+base_image_tag = whatmedo-base:latest
 #app_name = winspiker/whatmedo
 
 up:
@@ -15,7 +16,10 @@ rm-%:
 
 rm: rm-app
 
-build: clear
+build-base: clear
+	@docker build -t $(base_image_tag) docker/php/
+
+build-app:
 	@$(dc_bin) build
 
 clear:
