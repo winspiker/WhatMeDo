@@ -15,7 +15,7 @@ use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 
-class MainController
+final class MainController
 {
     public function __construct(
         private readonly TaskService $taskService,

@@ -9,7 +9,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 use Symfony\Component\Routing\RouterInterface;
 
-class PublishedMessageExceptionListener
+final class PublishedMessageExceptionListener
 {
     public function __construct(
         private readonly RouterInterface $router,

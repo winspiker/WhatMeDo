@@ -16,7 +16,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:create:user',
     description: 'Create default user',
 )]
-class CreateUserCommand extends Command
+final class CreateUserCommand extends Command
 {
     public function __construct(
         private readonly UserRepository $userRepository

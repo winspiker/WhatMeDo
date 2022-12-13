@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Exceptions;
 
-class AccessDeniedException extends \Exception implements PublishedMessageException
+final class AccessDeniedException extends \Exception implements PublishedMessageException
 {
 
 }

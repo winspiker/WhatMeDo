@@ -16,7 +16,7 @@ use Doctrine\Persistence\ManagerRegistry;
  * @method Task[] findAll()
  * @method Task[] findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
-class TaskRepository extends ServiceEntityRepository
+final class TaskRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
@@ -41,25 +41,4 @@ class TaskRepository extends ServiceEntityRepository
         }
     }
 
-//    /**
-//     * @return Task[] Returns an array of Tasks objects
-//     */
-//    public function findByUser($user): array
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere("t.user = $user")
-//            ->orderBy('t.createdAt', 'DESC')
-//            ->getQuery()
-//            ->getResult();
-//    }
-
-//    public function findOneBySomeField($value): ?Tasks
-//    {
-//        return $this->createQueryBuilder('t')
-//            ->andWhere('t.exampleField = :val')
-//            ->setParameter('val', $value)
-//            ->getQuery()
-//            ->getOneOrNullResult()
-//        ;
-//    }
 }

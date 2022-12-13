@@ -10,7 +10,7 @@ use Doctrine\DBAL\Types\Type;
 use Doctrine\Instantiator\Exception\ExceptionInterface;
 use Doctrine\Instantiator\Instantiator;
 
-class PasswordType extends Type
+final class PasswordType extends Type
 {
     public const PASSWORD = 'password';
     private static ?\ReflectionClass $reflection = null;

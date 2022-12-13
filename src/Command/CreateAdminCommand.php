@@ -17,7 +17,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
     name: 'app:create:admin',
     description: 'Create admin user',
 )]
-class CreateAdminCommand extends Command
+final class CreateAdminCommand extends Command
 {
     private UserRepository $userRepository;
 

@@ -6,7 +6,7 @@ namespace App\Service;
 
 use Symfony\Component\HttpFoundation\Request;
 
-class SessionErrorHandlingService
+final class SessionErrorHandlingService
 {
     public static function hasErrorSession(Request $request): string
     {
