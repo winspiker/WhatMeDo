@@ -8,15 +8,15 @@ use Symfony\Component\HttpFoundation\Request;
 
 final class SessionErrorHandlingService
 {
-    public static function hasErrorSession(Request $request): string
+    public static function hasErrorSession(Request $request): array
     {
         $session = $request->getSession();
 
         if (!$session->has('error')) {
-            return '';
+            return [];
         }
 
-        $error = $session->get('error')['message'];
+        $error = $session->get('error');
         $session->remove('error');
 
         return $error;

@@ -7,10 +7,12 @@
 {% block body %}
     <div class="p-5 text-center">
         <div class="col-10 container-fluid">
-            {% if error %}
+            {% if errors %}
+                {% for error in errors %}
                     <div class="alert alert-danger" style="background: rgba(255, 0, 0, 0.5)">
                         {{ error }}
                     </div>
+                {% endfor %}
             {% endif %}
             <table id="data_table" class="table data-fixed-columns table-dark table-striped">
                 <colgroup>
@@ -26,9 +28,9 @@
                 </colgroup>
                 <tbody>
                 <tr class="mb-50">
-                    <form method="POST" action="{{ path('create')}}">
+                    <form method="post" action="{{ path('create')}}">
                         <th scope="row"></th>
-                            <td><input class="form-control w-100 text-dark" id="title" name="title" type="text"></td>
+                            <td><input class="form-control w-100 text-dark"  id="title" name="title" type="text"></td>
                             <td><input class="form-control w-100 text-dark" name="description" type="text"></td>
                         <td></td>
                         <td></td>

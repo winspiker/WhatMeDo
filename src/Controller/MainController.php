@@ -36,9 +36,9 @@ final class MainController
         $user = $this->security->getUser();
         $tasks = $this->taskService->getByUser($user);
 
-        $errorMessage = SessionErrorHandlingService::hasErrorSession($request);
+        $errors = SessionErrorHandlingService::hasErrorSession($request);
 
-        return new Response($this->renderer->render('todo/todo.html.twig', ['tasks' => $tasks, 'error' => $errorMessage]));
+        return new Response($this->renderer->render('todo/todo.html.twig', ['tasks' => $tasks, 'errors' => $errors]));
     }
 
 

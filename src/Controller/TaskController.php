@@ -73,7 +73,7 @@ final class TaskController
     {
 
         $description = $request->request->get('description');
-        $title = $request->request->get('title');
+        $title = (string)$request->request->get('title');
 
         /** @var User $user */
         $user = $this->security->getUser();

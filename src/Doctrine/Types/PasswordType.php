@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace App\Doctrine\Types;
 
-use App\Types\Password;
+
+use App\Value\Password;
 use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 use Doctrine\Instantiator\Exception\ExceptionInterface;

@@ -6,6 +6,8 @@ base_image_tag = whatmedo-base:latest
 up:
 	@$(dc_bin) up -d
 
+down:
+	@$(dc_bin) down
 enter-%:
 	@$(dc_bin) exec $(call get_container_name, $@) bash
 

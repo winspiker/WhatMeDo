@@ -23,7 +23,7 @@ final class CreateTaskService
     /**
      * @throws ConstraintViolationException
      */
-    public function createTask(User $user, string $title, string $description): void
+    public function createTask(User $user, string $title, ?string $description): void
     {
         $task = new Task($user ,$title, $description);
 
